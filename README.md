@@ -1,44 +1,44 @@
 # JKS forenklede samfunnsøkonomisk analyse av veiprosjekter
 
-Dette repoet er laget i et prosjekt for å forenkle metoden for å beregne trafikantnytten av utbedring eller nybygging av vei. Modellen skiller mellom gammel vei (alternativ 0) og ny vei (alternativ 1) og bruker endringen av nøkkelfaktorer som tidsbruk og antall kilometer for trafikantene som utgangspunkt for å beregne netto trafikantnytte. Trafikantnytten følger grunnleggende samfunnsøkonomiske prinsipper som tilbud og etterspøsel etter vei er en konsekvens av kostnadene for å bruke veien. 
+Dette repoet er laget i et prosjekt for å forenkle metoden for å beregne trafikantnytten av utbedring eller nybygging av vei. Modellen skiller mellom gammel vei (alternativ 0) og ny vei (alternativ 1) og bruker endringen av nøkkelfaktorer som tidsbruk og antall kilometer for trafikantene som utgangspunkt for å beregne netto trafikantnytte. Trafikantnytten følger grunnleggende samfunnsøkonomiske prinsipper som tilbud og etterspørsel etter vei er en konsekvens av kostnadene for å bruke veien. 
 
-Fordelen med denne forenklede modellen er flerfolding. For det første så sikrer den transperans slik at det er enkelt å tolke resultatene. For det andre åpner modellen opp for videre modellering gjennom tweeking av inputfaktorene. Dette betyr at den kan brukes i tilfeller når man er ute etter å teste ulike fremtidscenarier osv. 
+Fordelen med denne forenklede modellen er flerfoldig. For det første sikrer den transparens slik at det er enkelt å tolke resultatene. For det andre åpner modellen opp for videre modellering gjennom justering av inputfaktorene. Dette betyr at den kan brukes i tilfeller når man er ute etter å teste ulike fremtidsscenarier.
 
-## Table of Contents
+## Innhold
 
-- [Statistical software for econometrics](#project-name)
-  - [Installation](#installation)
-  - [Description](#description)
-  - [Features](#features)
-  
-  - [Usage](#usage)
-  - [Contributing](#contributing)
-  - [License](#license)
-  - [Acknowledgements](#acknowledgements)
+- [Installering](#installering)
+- [Bruk](#bruk)
 
-## Installation
+## Installering
 
-Step-by-step instructions on how to install and set up your project. 
+Stegvis veiledning for installasjon av prosjektet:
+
 ```bash
-# In the folder you want the project to be stored at use the following command:
-git clone https://github.com/JohanWidding/statistical-software-for-econometrics.git
+# I mappen du ønsker at prosjektet skal lagres:
+git clone https://github.com/JohanWidding/JKS_modell.git
 
-#Change directory
-cd statistical-software-for-econometrics
+# Gå inn i mappen
+cd JKS_modell
 
-# Install requirements:
-pip install requirements_dev.txt
+# Installer pakkene som trengs
+pip install -r requirements.txt
 
-# You are done!
+# Kjør main og se til at alt fungerer som det skal
+python main.py
 ```
 
-## Description
+## Bruk
 
-The application gives the user a nice overview of the different statistical models that are included in the pages folder.
+Denne applikasjonen lar brukeren simulere trafikantnytte ved å analysere nøkkelfaktorer som tidsbruk og kostnader for gammel og ny vei. Resultatene gir innsikt i netto trafikantnytte, som kan brukes til å støtte beslutninger om veiprosjekter. Modellen gir mulighet for å:
 
-## Features
+1. **Justere inputfaktorer:** Brukeren kan endre variabler som påvirker tidsbruk, avstand og kostnader.
+2. **Analysere resultater:** Modellen genererer rapporter og visualiseringer som gjør det enkelt å tolke resultatene.
+3. **Teste fremtidsscenarier:** Med mulighet for å justere ulike antagelser kan modellen brukes til å evaluere potensielle utviklinger over tid.
 
-- 3D Plot
-- Dropp files of type: .dta .csv .txt .excel
-- Linear regression
+For å starte applikasjonen, følg disse stegene:
 
+1. Sørg for at alle avhengigheter er installert ved å følge installasjonsinstruksjonene.
+2. Kjør `main.py` for å starte hovedapplikasjonen.
+3. Bruk grensesnittet eller CLI-kommandoer for å legge inn data og generere analyser.
+
+For mer informasjon om hvordan du bruker spesifikke funksjoner i modellen, se dokumentasjonen i prosjektet eller kontakt utvikleren via GitHub.
