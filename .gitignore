@@ -1,5 +1,6 @@
 venv/
 .idea/
-/data/*
+/data/data.xlsx
 /Output/*
+!Output/.keep
 __pycache__/
