@@ -31,14 +31,21 @@ python main.py
 
 Denne applikasjonen lar brukeren simulere trafikantnytte ved å analysere nøkkelfaktorer som tidsbruk og kostnader for gammel og ny vei. Resultatene gir innsikt i netto trafikantnytte, som kan brukes til å støtte beslutninger om veiprosjekter. Modellen gir mulighet for å:
 
-1. **Justere inputfaktorer:** Brukeren kan endre variabler som påvirker tidsbruk, avstand og kostnader.
-2. **Analysere resultater:** Modellen genererer rapporter og visualiseringer som gjør det enkelt å tolke resultatene.
-3. **Teste fremtidsscenarier:** Med mulighet for å justere ulike antagelser kan modellen brukes til å evaluere potensielle utviklinger over tid.
+1. **Justere inputfaktorer:** Brukeren kan endre variabler som påvirker tidsbruk, avstand og kostnader osv. i `data/Prosjekter.xlsx`:
+   - Ark "data" inneholder prosjektene kolonnevis. Modellen leser dette arket per kolonne som individuelle prosjekter.
+     - Radene representerer over 100 ulike parametere som kan endres etter brukerens ønsker. Les beskrivelsen grundig. Dersom variabelnavnet ikke strekker til, se "README"-arket.
+   - Ark "Tabell prisvekst" inneholder tabell for nominell prisvekst årene før sammenligningsåret.
+   - Ark "Tabell lønnsvekst" inneholder tabell for nominell lønnsvekst årene før sammenligningsåret.
+   - Ark "README" inneholder antagelser og premisser som underbygger inputverdiene i modellen.
+
+2. **Analysere resultater:** Modellen genererer rapporter i mappen "Output", én Excel-fil per prosjekt. Denne dataen kan videre brukes til analyser.
+
+3. **Teste fremtidsscenarier:** Med mulighet for å justere ulike antagelser og inputverdier i `Prosjekter.xlsx` kan modellen brukes til å evaluere potensielle utviklinger over tid.
 
 For å starte applikasjonen, følg disse stegene:
 
 1. Sørg for at alle avhengigheter er installert ved å følge installasjonsinstruksjonene.
 2. Kjør `main.py` for å starte hovedapplikasjonen.
-3. Bruk grensesnittet eller CLI-kommandoer for å legge inn data og generere analyser.
+3. Se mappen "Output" for de genererte rapportene.
 
 For mer informasjon om hvordan du bruker spesifikke funksjoner i modellen, se dokumentasjonen i prosjektet eller kontakt utvikleren via GitHub.
