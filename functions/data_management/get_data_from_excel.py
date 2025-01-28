@@ -8,7 +8,7 @@ class ExcelDataHandler:
     def __init__(self, file_path_projects, file_path_mapping,
                             sheet_name_price_growth,
                             sheet_name_wage_growth,
-                            sheet_name_projects, sheet_name_population):
+                            sheet_name_projects, sheet_name_population, sheet_name_pop_to_traffic):
         """
         Initialiserer klassen med filsti til Excel-dokumentet.
         :param file_path: Filsti til Excel-dokumentet.
@@ -19,6 +19,7 @@ class ExcelDataHandler:
         self.wage_growth_df = self.get_sheet_from_excel(sheet_name_wage_growth)
         self.projects_df = self.get_sheet_from_excel(sheet_name_projects)
         self.population_df = self.get_sheet_from_excel(sheet_name_population)
+        self.pop_to_traffic_df = self.get_sheet_from_excel(sheet_name_pop_to_traffic)
         self.store_projects_in_a_list()
         
 
@@ -88,7 +89,7 @@ class ExcelDataHandler:
                 attr_names.append(key)
                 attr_values.append(self.get_value_from_search(i, key))
             
-            project = Project(project_name, attr_names, attr_values, self.price_growth_df, self.wage_growth_df, self.population_df)
+            project = Project(project_name, attr_names, attr_values, self.price_growth_df, self.wage_growth_df, self.population_df, self.pop_to_traffic_df)
 
             self.projects.append(project)
 

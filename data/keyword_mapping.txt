@@ -48,6 +48,7 @@
    "L_rest_a1" : "Lette kjøretøy restledd (tiltak)",
    "L_g_rtm" : "Lette kjøretøy vekstrate RTM (per år)",
    "L_g_ntm" : "Lette kjøretøy vekstrate NTM (per år)",
+   "region" : "Fylke (Bruk fylkenavn fra \"Befolkningsfremskrivinger\")",
    "FO_t_share_rtm" : "Lette kjøretøy tjeneste (andel av FO_RTM)",
    "EL_t_share_rtm" : "Lette kjøretøy tjeneste (andel av EL_RTM)",
    "FO_t_share_ntm" : "Lette kjøretøy tjeneste (andel av FO_NTM)",

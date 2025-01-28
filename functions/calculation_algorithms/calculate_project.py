@@ -138,7 +138,7 @@ def calculate_project(project, scenario = None):
     "Diskontert_nytte_total",
 ]
 
-    save_dfs_to_excel(project.name.replace("/", "-"), dataframe_liste, "./Output/", sheet_names=korresponderende_ark_navn)
+    save_dfs_to_excel(f"{project.name.replace("/", "-")}_{str(scenario)}", dataframe_liste, "./Output/", sheet_names=korresponderende_ark_navn)
 
     return discounted_benefit.total.values.sum()
 
