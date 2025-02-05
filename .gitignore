@@ -4,3 +4,5 @@ venv/
 /Output/*
 !Output/.keep
 __pycache__/
+projects_data.xlsx
+projects_overview.xlsx
