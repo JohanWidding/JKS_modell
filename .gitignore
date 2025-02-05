@@ -1,8 +1,5 @@
 venv/
 .idea/
-/data/data.xlsx
-/Output/*
-!Output/.keep
+*.xlsx
+!/data/Prosjekter.xlsx
 __pycache__/
-projects_data.xlsx
-projects_overview.xlsx
