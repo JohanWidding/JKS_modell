@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 def generate_timeseries(project, initial_value, growth_rate):
@@ -27,15 +28,32 @@ def generate_timeseries(project, initial_value, growth_rate):
 
     changes = []
 
-    for y in years:
-        if y in befolkning['Tid'].values and (y + 1) in befolkning['Tid'].values:
-            curr_year = befolkning.loc[befolkning['Tid'] == y, f'{fylke}_{scenario}'].iloc[0]
-            next_year = befolkning.loc[befolkning['Tid'] == (y + 1), f'{fylke}_{scenario}'].iloc[0]
-            prc_change = 1 + ((next_year - curr_year) / curr_year)
-        else:
-            prc_change = 1 + growth_rate
+    # Her går det ann å bruke rullwt anitt av de 5 siste årsendringene som videre vekst.
+    # Ett problem her er at nå vil godstransport få samme vekst som lett transport de første årene frem til 2050
+    # Her går det ann å endre inisialverdien i modell året for scenario med lavere vekst og høyere vekst.
 
-        changes.append(prc_change)
+    rolling_mean_prc_change = 0
+
+    for y in years:
+        try:
+            if y in befolkning['Tid'].values and (y + 1) in befolkning['Tid'].values:
+                curr_year = befolkning.loc[befolkning['Tid'] == y, f'{fylke}_{scenario}'].iloc[0]
+                next_year = befolkning.loc[befolkning['Tid'] == (y + 1), f'{fylke}_{scenario}'].iloc[0]
+                region_factor = pop_to_traffic.loc[pop_to_traffic['Fylke'] == fylke, f'transportarbeid_koeffisient'].iloc[0]
+                prc_change = ((next_year - curr_year) / curr_year) * region_factor
+            else:
+                if rolling_mean_prc_change != 0:
+                    prc_change = rolling_mean_prc_change
+                else:
+                    prc_change = growth_rate
+
+            if len(changes) > 5:
+                rolling_mean_prc_change = np.mean([x - 1 for x in changes[-5:]])
+
+            changes.append(1 + prc_change)
+        except:
+            prc_change = growth_rate
+            changes.append(1 + prc_change)
 
     # Initialize the values list with None for all years
     values = [None] * len(years)
@@ -43,8 +61,16 @@ def generate_timeseries(project, initial_value, growth_rate):
     # Find the index of the model value year
     initial_year_index = model_year - start_year # ex. 2030 - 2029 = 1 (index i listen values)
 
+    
+    try:
+        MMMM_model_year = befolkning.loc[befolkning['Tid'] == model_year, f'{fylke}_Hovedalternativet (MMMM)'].iloc[0]
+        scenario_model_year = befolkning.loc[befolkning['Tid'] == model_year, f'{fylke}_{scenario}'].iloc[0]
+        scenario_prc_change = ((scenario_model_year - MMMM_model_year) / MMMM_model_year) 
+    except:
+        scenario_prc_change = 0
+
     # Set the initial value at its respective year
-    values[initial_year_index] = initial_value # ex. ÅDT i år 2030
+    values[initial_year_index] = initial_value * (1 + scenario_prc_change) # ex. ÅDT i år 2030
 
     # Fill in the values for years before the initial year (decreasing backward)
     for i in range(initial_year_index - 1, -1, -1):

@@ -4,7 +4,7 @@ from functions.data_management.get_data_from_excel import ExcelDataHandler
 
 
 def load_data():
-    file_path_projects = 'data/Prosjekter.xlsx'
+    file_path_projects = 'data/data.xlsx'
     file_path_mapping = 'data/keyword_mapping.txt'
     sheet_name_price_growth = 'Tabell prisvekst'
     sheet_name_wage_growth = 'Tabell lønnsvekst'

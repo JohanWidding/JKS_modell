@@ -1,5 +1,6 @@
 from functions.calculation_algorithms.calculate_project import calculate_project
 from functions.data_management.load_project_data import load_data
+from functions.data_management.output_main import load_excel_files
 
 
 if __name__ == "__main__":
@@ -7,7 +8,7 @@ if __name__ == "__main__":
 
     for project in data.projects:
 
-        scenarios = ["Hovedalternativet (MMMM)", "Lav nasjonal vekst (LLML)", "Høy nasjonal vekst (HHMH)"]
+        scenarios = ["Standard", "Hovedalternativet (MMMM)", "Lav nasjonal vekst (LLML)", "Høy nasjonal vekst (HHMH)"]
 
         trafikantnytte_liste = []
 
@@ -16,5 +17,4 @@ if __name__ == "__main__":
 
             trafikantnytte_liste.append(trafikantnytte)
 
-        for i in range(len(trafikantnytte_liste)):
-            print(f"{project.name}_{scenarios[i]}: {f"{int(trafikantnytte_liste[i]):,}".replace(",", " ")}  ({round((trafikantnytte_liste[i]-trafikantnytte_liste[0])/trafikantnytte_liste[0],2)} %)")
+    load_excel_files("Output//")
