@@ -38,16 +38,16 @@ def hour_cost_timeseries(project):
     hourcost_driver_t_rtm = project.cost_t_rtm_d * growth_factor
     hourcost_driver_a_rtm = project.cost_a_rtm_d * growth_factor
     hourcost_driver_f_rtm = project.cost_f_rtm_d * growth_factor
-    hourcost_driver_t_ntm = project.cost_t_rtm_d * growth_factor
-    hourcost_driver_a_ntm = project.cost_a_rtm_d * growth_factor
-    hourcost_driver_f_ntm = project.cost_f_rtm_d * growth_factor
+    hourcost_driver_a_ntm = project.cost_a_ntm_d * growth_factor
+    hourcost_driver_t_ntm = project.cost_t_ntm_d * growth_factor
+    hourcost_driver_f_ntm = project.cost_f_ntm_d * growth_factor
 
     hourcost_passanger_t_rtm = project.cost_t_rtm_p * growth_factor
     hourcost_passanger_a_rtm = project.cost_a_rtm_p * growth_factor
     hourcost_passanger_f_rtm = project.cost_f_rtm_p * growth_factor
-    hourcost_passanger_t_ntm = project.cost_t_rtm_p * growth_factor
-    hourcost_passanger_a_ntm = project.cost_a_rtm_p * growth_factor
-    hourcost_passanger_f_ntm = project.cost_f_rtm_p * growth_factor
+    hourcost_passanger_t_ntm = project.cost_t_ntm_p * growth_factor
+    hourcost_passanger_a_ntm = project.cost_a_ntm_p * growth_factor
+    hourcost_passanger_f_ntm = project.cost_f_ntm_p * growth_factor
 
     hourcost_driver_heavy = project.cost_H_d * growth_factor
 

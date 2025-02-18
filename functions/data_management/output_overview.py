@@ -1,7 +1,7 @@
 import pandas as pd
 from xlsxwriter.utility import xl_range
 
-def dump_overview_to_excel(files_dict, output_file):
+def overview_to_excel(files_dict, writer):
     """
     Eksporterer et sammendragsark ("Overview") med tre tabeller basert på data fra alle prosjekter.
     
@@ -49,7 +49,7 @@ def dump_overview_to_excel(files_dict, output_file):
         effect_value = None  # EFFEKT
         if "Main" in scenarios:
             for file_obj in scenarios["Main"]:
-                if file_obj.variation == "Standard" and not file_obj.df.empty:
+                if file_obj.variation == "Hovedalternativet (MMMM)" and not file_obj.df.empty:
                     base_value = clean_int(file_obj.df.iloc[0, -1])
                     effect_value = clean_int(file_obj.df.iloc[1, -1]) if file_obj.df.shape[0] > 1 else 0
                     break
@@ -87,84 +87,89 @@ def dump_overview_to_excel(files_dict, output_file):
     # Sorter prosjektene etter størst relativt/prosent avvik mellom Nedre og Øvre
     summary_data.sort(key=lambda d: d["ovre_prosent"] - d["nedre_prosent"], reverse=True)
 
-    # Opprett Excel-filen med ett ark "Overview"
-    with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
-        workbook = writer.book
-        overview_sheet = workbook.add_worksheet("Overview")
-        writer.sheets["Overview"] = overview_sheet
 
-        # Flytt tabellen ett hakk ned: header starter nå på rad 1
-        header_row = 1
-        data_row = header_row + 1  # data starter på rad 2
+    workbook = writer.book
+    overview_sheet = workbook.add_worksheet("Oversikt")
+    writer.sheets["Oversikt"] = overview_sheet
 
-        # Definer formater med hvit bakgrunn og border under header-labels
-        header_format = workbook.add_format({
-            "bold": True,
-            "align": "center",
-            "bg_color": "white",
-            "bottom": 1  # Legger til en border under header cellene
-        })
-        text_format = workbook.add_format({
-            "align": "left",
-            "bg_color": "white"
-        })
-        money_format = workbook.add_format({
-            "num_format": "##,##0.00 \"mrd\"",
-            "align": "center",
-            "bg_color": "white"
-        })
-        percent_format = workbook.add_format({
-            "num_format": "0.00%",
-            "align": "center",
-            "bg_color": "white"
-        })
+    # Flytt tabellen ett hakk ned: header starter nå på rad 1
+    header_row = 1
+    data_row = header_row + 1  # data starter på rad 2
 
-        # Flytt tabellene ett hakk mot høyre:
-        table1_start_col = 1   # Tabell 1 starter i kolonne B
-        table2_start_col = 6   # Tabell 2 starter i kolonne G
-        table3_start_col = 11  # Tabell 3 starter i kolonne L
+    # Definer formater med hvit bakgrunn og border under header-labels
+    header_format = workbook.add_format({
+        "bold": True,
+        "align": "center",
+        "bg_color": "white",
+        "bottom": 1  # Legger til en border under header cellene
+    })
+    text_format = workbook.add_format({
+        "align": "left",
+        "bg_color": "white"
+    })
+    money_format = workbook.add_format({
+        "num_format": "##,##0.00 \"mrd\"",
+        "align": "center",
+        "bg_color": "white"
+    })
+    percent_format = workbook.add_format({
+        "num_format": "0.00%",
+        "align": "center",
+        "bg_color": "white"
+    })
 
-        # --- Tabell 1: Prosjekt, Trafikantnytte EFFEKT, Trafikantnytte JKSM, Prosent avvik ---
-        overview_sheet.write(header_row, table1_start_col + 0, "Prosjekt", header_format)
-        overview_sheet.write(header_row, table1_start_col + 1, "Trafikantnytte EFFEKT", header_format)
-        overview_sheet.write(header_row, table1_start_col + 2, "Trafikantnytte JKSM", header_format)
-        overview_sheet.write(header_row, table1_start_col + 3, "Prosent avvik", header_format)
+    # Flytt tabellene ett hakk mot høyre:
+    table1_start_col = 8   # Tabell 1 starter i kolonne B
+    table2_start_col = 13   # Tabell 2 starter i kolonne G
+    table3_start_col = 1  # Tabell 3 starter i kolonne L
 
-        # --- Tabell 2: Prosjekt, Trafikantnytte JKSM, Nedre, Øvre ---
-        overview_sheet.write(header_row, table2_start_col + 0, "Prosjekt", header_format)
-        overview_sheet.write(header_row, table2_start_col + 1, "Trafikantnytte JKSM", header_format)
-        overview_sheet.write(header_row, table2_start_col + 2, "Nedre", header_format)
-        overview_sheet.write(header_row, table2_start_col + 3, "Øvre", header_format)
+    # --- Tabell 1: Prosjekt, Trafikantnytte EFFEKT, Trafikantnytte JKSM, Prosent avvik ---
+    overview_sheet.write(header_row, table1_start_col + 0, "Prosjekt", header_format)
+    overview_sheet.write(header_row, table1_start_col + 1, "Trafikantnytte EFFEKT", header_format)
+    overview_sheet.write(header_row, table1_start_col + 2, "Trafikantnytte JKSM", header_format)
+    overview_sheet.write(header_row, table1_start_col + 3, "Prosent avvik", header_format)
 
-        # --- Tabell 3: Prosjekt, Nedre prosentavvik, Øvre prosentavvik ---
-        overview_sheet.write(header_row, table3_start_col + 0, "Prosjekt", header_format)
-        overview_sheet.write(header_row, table3_start_col + 1, "Nedre prosentavvik", header_format)
-        overview_sheet.write(header_row, table3_start_col + 2, "Øvre prosentavvik", header_format)
+    # --- Tabell 2: Prosjekt, Trafikantnytte JKSM, Nedre, Øvre ---
+    overview_sheet.write(header_row, table2_start_col + 0, "Prosjekt", header_format)
+    overview_sheet.write(header_row, table2_start_col + 1, "Trafikantnytte JKSM", header_format)
+    overview_sheet.write(header_row, table2_start_col + 2, "Nedre", header_format)
+    overview_sheet.write(header_row, table2_start_col + 3, "Øvre", header_format)
 
-        # Skriv ut dataene – én rad per prosjekt, starter fra data_row
-        current_row = data_row
-        for data in summary_data:
-            # Tabell 1
-            overview_sheet.write(current_row, table1_start_col + 0, data["project"], text_format)
-            overview_sheet.write(current_row, table1_start_col + 1, data["trafikantnytte_effekt"], money_format)
-            overview_sheet.write(current_row, table1_start_col + 2, data["trafikantnytte_jksm"], money_format)
-            overview_sheet.write(current_row, table1_start_col + 3, data["prosent_avvik"], percent_format)
-            # Tabell 2
-            overview_sheet.write(current_row, table2_start_col + 0, data["project"], text_format)
-            overview_sheet.write(current_row, table2_start_col + 1, data["trafikantnytte_jksm"], money_format)
-            overview_sheet.write(current_row, table2_start_col + 2, data["nedre"], money_format)
-            overview_sheet.write(current_row, table2_start_col + 3, data["ovre"], money_format)
-            # Tabell 3
-            overview_sheet.write(current_row, table3_start_col + 0, data["project"], text_format)
-            overview_sheet.write(current_row, table3_start_col + 1, data["nedre_prosent"], percent_format)
-            overview_sheet.write(current_row, table3_start_col + 2, data["ovre_prosent"], percent_format)
-            current_row += 1
+    # --- Tabell 3: Prosjekt, Nedre prosentavvik, Øvre prosentavvik ---
+    overview_sheet.write(header_row, table3_start_col + 0, "Prosjekt", header_format)
+    overview_sheet.write(header_row, table3_start_col + 1, "Nedre prosentavvik", header_format)
+    overview_sheet.write(header_row, table3_start_col + 2, "Øvre prosentavvik", header_format)
+    overview_sheet.write(header_row, table3_start_col + 3, "Nedre Trafikantnytte", header_format)
+    overview_sheet.write(header_row, table3_start_col + 4, "EFFEKT Trafikantnytte", header_format)
+    overview_sheet.write(header_row, table3_start_col + 5, "Øvre Trafikantnytte", header_format)
 
-        # Sett bakgrunn og standard kolonnebredde for kolonner A til O
-        overview_sheet.set_column('A:O', 20, workbook.add_format({'bg_color': 'white'}))
-        # Overstyr bredden for kolonne A, F og K (mye smalere)
-        overview_sheet.set_column('A:A', 10, workbook.add_format({'bg_color': 'white'}))
-        overview_sheet.set_column('F:F', 10, workbook.add_format({'bg_color': 'white'}))
-        overview_sheet.set_column('K:K', 10, workbook.add_format({'bg_color': 'white'}))
+    # Skriv ut dataene – én rad per prosjekt, starter fra data_row
+    current_row = data_row
+    for data in summary_data:
+        # Tabell 1
+        overview_sheet.write(current_row, table1_start_col + 0, data["project"], text_format)
+        overview_sheet.write(current_row, table1_start_col + 1, data["trafikantnytte_effekt"], money_format)
+        overview_sheet.write(current_row, table1_start_col + 2, data["trafikantnytte_jksm"], money_format)
+        overview_sheet.write(current_row, table1_start_col + 3, data["prosent_avvik"], percent_format)
+        # Tabell 2
+        overview_sheet.write(current_row, table2_start_col + 0, data["project"], text_format)
+        overview_sheet.write(current_row, table2_start_col + 1, data["trafikantnytte_jksm"], money_format)
+        overview_sheet.write(current_row, table2_start_col + 2, data["nedre"], money_format)
+        overview_sheet.write(current_row, table2_start_col + 3, data["ovre"], money_format)
+        # Tabell 3
+        overview_sheet.write(current_row, table3_start_col + 0, data["project"], text_format)
+        overview_sheet.write(current_row, table3_start_col + 1, data["nedre_prosent"], percent_format)
+        overview_sheet.write(current_row, table3_start_col + 2, data["ovre_prosent"], percent_format)
+        overview_sheet.write(current_row, table3_start_col + 3, (1+data["nedre_prosent"])*data["trafikantnytte_effekt"], money_format)
+        overview_sheet.write(current_row, table3_start_col + 4, data["trafikantnytte_effekt"], money_format)
+        overview_sheet.write(current_row, table3_start_col + 5, (1+data["ovre_prosent"])*data["trafikantnytte_effekt"], money_format)
+        current_row += 1
 
-        return output_file
+    # Sett bakgrunn og standard kolonnebredde for kolonner A til O
+    overview_sheet.set_column('A:Q', 20, workbook.add_format({'bg_color': 'white'}))
+    # Overstyr bredden for kolonne A, F og K (mye smalere)
+    overview_sheet.set_column('A:A', 10, workbook.add_format({'bg_color': 'white'}))
+    overview_sheet.set_column('H:H', 10, workbook.add_format({'bg_color': 'white'}))
+    overview_sheet.set_column('M:M', 10, workbook.add_format({'bg_color': 'white'}))
+
+    return writer

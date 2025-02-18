@@ -1,8 +1,9 @@
 import pandas as pd
 from collections import namedtuple
 from functions.calculation_algorithms.elasticity_factors_timeseries import elasticity_factors_timeseries
-from functions.data_preprocessing.traffic_numbers.gen_desending_curvefactor_timeseries import gen_curvefactor_timeseries
+from functions.data_preprocessing.traffic_numbers.gen_desending_curvefactor_timeseries import gen_linear_timeseries
 from functions.data_preprocessing.traffic_numbers.gen_timeseries import generate_timeseries
+from functions.data_preprocessing.traffic_numbers.logistic_decay_list import logistic_decay_values
 
 def vehicle_group_timeseries(project):
 
@@ -37,38 +38,43 @@ def vehicle_group_timeseries(project):
     EL_tjeneste_NTM = project.EL_ntm * project.EL_t_share_ntm
 
     # Generer faktorserier for å kunne justere på andelen elektriske kjøretøy i forhold til fossildrevne. (elektriske kjøretøy øker, fossildrevne synker)
-    decay_series_light = gen_curvefactor_timeseries(start_year, end_year, model_year, end_year_of_fossil_light, decay_factor_fossil_light)
-    decay_series_heavy = gen_curvefactor_timeseries(start_year, end_year, model_year, end_year_of_fossil_heavy, decay_factor_fossil_heavy)
+    decay_series_light = gen_linear_timeseries(start_year, end_year, model_year, end_year_of_fossil_light, decay_factor_fossil_light)
+    decay_series_heavy = gen_linear_timeseries(start_year, end_year, model_year, end_year_of_fossil_heavy, decay_factor_fossil_heavy)
     incremental_series_light = (1 - decay_series_light)
     incremental_series_heavy = (1 - decay_series_heavy)
 
+    decay_factors_non = [1 for i in range(100)]
+    decay_factors_tjeneste = logistic_decay_values(t0=project.midt_y_t, x=project.midt_bunn_t)
+    decay_factors_arbeid = logistic_decay_values(t0=project.midt_y_a, x=project.midt_bunn_a)
+    decay_factors_fritid = logistic_decay_values(t0=project.midt_y_f, x=project.midt_bunn_f)
+
     # Genererer tidseriene
     fossil_data = {
-        "gods_RTM": generate_timeseries(project, FO_gods_RTM, growth_rate_gods) * (decay_series_heavy),
-        "fritid_RTM": generate_timeseries(project, FO_fritid_RTM, growth_rate_RTM) * (decay_series_light),
-        "arbeid_RTM": generate_timeseries(project, FO_arbeid_RTM, growth_rate_RTM) * (decay_series_light),
-        "tjeneste_RTM": generate_timeseries(project, FO_tjeneste_RTM, growth_rate_RTM) * (decay_series_light),
-        "fritid_NTM": generate_timeseries(project, FO_fritid_NTM, growth_rate_NTM) * (decay_series_light),
-        "arbeid_NTM": generate_timeseries(project, FO_arbeid_NTM, growth_rate_NTM) * (decay_series_light),
-        "tjeneste_NTM": generate_timeseries(project, FO_tjeneste_NTM, growth_rate_NTM) * (decay_series_light)}
+        "gods_RTM": generate_timeseries(project, FO_gods_RTM, growth_rate_gods, decay_factors_non) * (decay_series_heavy),
+        "fritid_RTM": generate_timeseries(project, FO_fritid_RTM, growth_rate_RTM, decay_factors_fritid) * (decay_series_light),
+        "arbeid_RTM": generate_timeseries(project, FO_arbeid_RTM, growth_rate_RTM, decay_factors_arbeid) * (decay_series_light),
+        "tjeneste_RTM": generate_timeseries(project, FO_tjeneste_RTM, growth_rate_RTM, decay_factors_tjeneste) * (decay_series_light),
+        "fritid_NTM": generate_timeseries(project, FO_fritid_NTM, growth_rate_NTM, decay_factors_fritid) * (decay_series_light),
+        "arbeid_NTM": generate_timeseries(project, FO_arbeid_NTM, growth_rate_NTM, decay_factors_arbeid) * (decay_series_light),
+        "tjeneste_NTM": generate_timeseries(project, FO_tjeneste_NTM, growth_rate_NTM, decay_factors_tjeneste) * (decay_series_light)}
     # Bilene som "forsvinner" ovenfor i fossil_data bli til elbiler
     fossil_to_electric = {
-        "gods_RTM": generate_timeseries(project, FO_gods_RTM, growth_rate_gods) * (incremental_series_heavy),
-        "fritid_RTM": generate_timeseries(project, FO_fritid_RTM, growth_rate_RTM) * (incremental_series_light),
-        "arbeid_RTM": generate_timeseries(project, FO_arbeid_RTM, growth_rate_RTM) * (incremental_series_light),
-        "tjeneste_RTM": generate_timeseries(project, FO_tjeneste_RTM, growth_rate_RTM) * (incremental_series_light),
-        "fritid_NTM": generate_timeseries(project, FO_fritid_NTM, growth_rate_NTM) * (incremental_series_light),
-        "arbeid_NTM": generate_timeseries(project, FO_arbeid_NTM, growth_rate_NTM) * (incremental_series_light),
-        "tjeneste_NTM": generate_timeseries(project, FO_tjeneste_NTM, growth_rate_NTM) * (incremental_series_light) 
+        "gods_RTM": generate_timeseries(project, FO_gods_RTM, growth_rate_gods, decay_factors_non) * (incremental_series_heavy),
+        "fritid_RTM": generate_timeseries(project, FO_fritid_RTM, growth_rate_RTM, decay_factors_fritid) * (incremental_series_light),
+        "arbeid_RTM": generate_timeseries(project, FO_arbeid_RTM, growth_rate_RTM, decay_factors_arbeid) * (incremental_series_light),
+        "tjeneste_RTM": generate_timeseries(project, FO_tjeneste_RTM, growth_rate_RTM, decay_factors_tjeneste) * (incremental_series_light),
+        "fritid_NTM": generate_timeseries(project, FO_fritid_NTM, growth_rate_NTM, decay_factors_fritid) * (incremental_series_light),
+        "arbeid_NTM": generate_timeseries(project, FO_arbeid_NTM, growth_rate_NTM, decay_factors_arbeid) * (incremental_series_light),
+        "tjeneste_NTM": generate_timeseries(project, FO_tjeneste_NTM, growth_rate_NTM, decay_factors_tjeneste) * (incremental_series_light) 
     }
     electric_data = {
-        "gods_RTM": generate_timeseries(project, EL_gods_RTM, growth_rate_gods),
-        "fritid_RTM": generate_timeseries(project, EL_fritid_RTM, growth_rate_RTM),
-        "arbeid_RTM": generate_timeseries(project, EL_arbeid_RTM, growth_rate_RTM),
-        "tjeneste_RTM": generate_timeseries(project, EL_tjeneste_RTM, growth_rate_RTM),
-        "fritid_NTM": generate_timeseries(project, EL_fritid_NTM, growth_rate_NTM),
-        "arbeid_NTM": generate_timeseries(project, EL_arbeid_NTM, growth_rate_NTM),
-        "tjeneste_NTM": generate_timeseries(project, EL_tjeneste_NTM, growth_rate_NTM)
+        "gods_RTM": generate_timeseries(project, EL_gods_RTM, growth_rate_gods, decay_factors_non),
+        "fritid_RTM": generate_timeseries(project, EL_fritid_RTM, growth_rate_RTM, decay_factors_fritid),
+        "arbeid_RTM": generate_timeseries(project, EL_arbeid_RTM, growth_rate_RTM, decay_factors_arbeid),
+        "tjeneste_RTM": generate_timeseries(project, EL_tjeneste_RTM, growth_rate_RTM, decay_factors_tjeneste),
+        "fritid_NTM": generate_timeseries(project, EL_fritid_NTM, growth_rate_NTM, decay_factors_fritid),
+        "arbeid_NTM": generate_timeseries(project, EL_arbeid_NTM, growth_rate_NTM, decay_factors_arbeid),
+        "tjeneste_NTM": generate_timeseries(project, EL_tjeneste_NTM, growth_rate_NTM, decay_factors_tjeneste)
     }
     
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def generate_timeseries(project, initial_value, growth_rate):
+def generate_timeseries(project, initial_value, growth_rate, decay_list):
     """
     Generates a time series with yearly values based on compound growth.
 
@@ -22,7 +22,8 @@ def generate_timeseries(project, initial_value, growth_rate):
     scenario = project.scenario
 
     befolkning = project.population_df
-    pop_to_traffic = project.pop_to_traffic_df
+    pop_to_traffic = project.pop_to_traffic_df # Brukes ikke lengre
+    adj_traffic_factor = project.adj_traffic
 
     years = range(start_year, end_year + 1)
 
@@ -31,6 +32,8 @@ def generate_timeseries(project, initial_value, growth_rate):
     # Her går det ann å bruke rullwt anitt av de 5 siste årsendringene som videre vekst.
     # Ett problem her er at nå vil godstransport få samme vekst som lett transport de første årene frem til 2050
     # Her går det ann å endre inisialverdien i modell året for scenario med lavere vekst og høyere vekst.
+    # Øsnker å modellere en slags prosent basert på årstallet, som blir sterkere når året blir stort.
+    # Det må være litt som en logistisk synkende faktor, og en måte å justere når mellom 0 og 100 år den skal begynne å synke.
 
     rolling_mean_prc_change = 0
 
@@ -39,7 +42,7 @@ def generate_timeseries(project, initial_value, growth_rate):
             if y in befolkning['Tid'].values and (y + 1) in befolkning['Tid'].values:
                 curr_year = befolkning.loc[befolkning['Tid'] == y, f'{fylke}_{scenario}'].iloc[0]
                 next_year = befolkning.loc[befolkning['Tid'] == (y + 1), f'{fylke}_{scenario}'].iloc[0]
-                region_factor = pop_to_traffic.loc[pop_to_traffic['Fylke'] == fylke, f'transportarbeid_koeffisient'].iloc[0]
+                region_factor = project.transport_el
                 prc_change = ((next_year - curr_year) / curr_year) * region_factor
             else:
                 if rolling_mean_prc_change != 0:
@@ -70,7 +73,7 @@ def generate_timeseries(project, initial_value, growth_rate):
         scenario_prc_change = 0
 
     # Set the initial value at its respective year
-    values[initial_year_index] = initial_value * (1 + scenario_prc_change) # ex. ÅDT i år 2030
+    values[initial_year_index] = initial_value * (1 + scenario_prc_change) * adj_traffic_factor # ex. ÅDT i år 2030
 
     # Fill in the values for years before the initial year (decreasing backward)
     for i in range(initial_year_index - 1, -1, -1):
@@ -79,6 +82,9 @@ def generate_timeseries(project, initial_value, growth_rate):
     # Fill in the values for years after the initial year (increasing forward)
     for i in range(initial_year_index, len(changes) - 1):
         values[i + 1] = values[i] * changes[i]
+
+    for i in range(len(values)):
+        values[i] = values[i] * decay_list[i]
         
     return pd.Series(data=values, index=years, name="Value")
 

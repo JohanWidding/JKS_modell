@@ -3,7 +3,6 @@ import pandas as pd
 from collections import defaultdict
 
 from functions.data_management.excel_main_template import dump_projects_to_excel
-from functions.data_management.output_overview import dump_overview_to_excel
 
 class ExcelFile:
     def __init__(self, variation: str, df: pd.DataFrame):
@@ -90,6 +89,5 @@ def load_excel_files(folder_path: str):
 
     # Print structured results
     dump_projects_to_excel(files_dict, "projects_data.xlsx")
-    dump_overview_to_excel(files_dict, "projects_overview.xlsx")
     
 

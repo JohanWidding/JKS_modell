@@ -28,14 +28,20 @@ def calculate_project(project, scenario = None):
     const_a0_df, const_a1_df = constant_cost_timeseries(project)
     costs = generalized_cost_timeseries(project)
     min_a0_df, min_a1_df = minutes_timeseries(project)
+    kilometers_a0 = project.D_a0
+    kilometers_a1 = project.D_a1
     discounting_df = discounting_timeseries(project)
     elasticity = elasticity_timeseries(project)
     elasticity_factors = elasticity_factors_timeseries(project)
     benefit = net_benefit(project)
     discounted_benefit = discounted_net_benefit(project)
 
-    trafikantnytte = discounted_benefit.total.values.sum()
-    formatted_nytte = f"{int(trafikantnytte):,}".replace(",", " ")
+    trafikantnytte = 0 if discounted_benefit.total.dropna(axis=1, how="all").empty else discounted_benefit.total.dropna(axis=1, how="all").values.sum()
+
+    try:
+        formatted_nytte = f"{int(trafikantnytte):,}".replace(",", " ")
+    except:
+        formatted_nytte = "0"
     formatted_nytte_EFFEKT = f"{int(project.benefit_EFFEKT)*1000000:,}".replace(",", " ")
     trafikantnytte = pd.DataFrame({'trafikantnytte': [formatted_nytte, formatted_nytte_EFFEKT]})
 
@@ -122,8 +128,8 @@ def calculate_project(project, scenario = None):
     "Generaliserte_kostnader_FO_a1",
     "Generaliserte_kostnader_EL_a0",
     "Generaliserte_kostnader_EL_a1",
-    "Generaliserte_kostnader_passasjer_a0",
-    "Generaliserte_kostnader_passasjer_a1",
+    "Generaliserte_k_passasjer_a0",
+    "Generaliserte_k_passasjer_a1",
     "Elastisitet",
     "Elastisitetsfaktorer_FO_sjåfør",
     "Elastisitetsfaktorer_EL_sjåfør",

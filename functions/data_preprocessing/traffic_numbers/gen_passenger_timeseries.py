@@ -38,12 +38,12 @@ def passenger_timeseries(project):
     # Genererer tidseriene
     passenger_data = {
         "gods_RTM": generate_timeseries(start_year, end_year, model_year, CP_heavy_rtm, growth_rate_gods),
-        "fritid_RTM": generate_timeseries(start_year, end_year, model_year, CP_t_rtm, growth_rate_RTM),
+        "fritid_RTM": generate_timeseries(start_year, end_year, model_year, CP_f_rtm, growth_rate_RTM),
         "arbeid_RTM": generate_timeseries(start_year, end_year, model_year, CP_a_rtm, growth_rate_RTM),
-        "tjeneste_RTM": generate_timeseries(start_year, end_year, model_year, CP_f_rtm, growth_rate_RTM),
-        "fritid_NTM": generate_timeseries(start_year, end_year, model_year, CP_t_ntm, growth_rate_NTM),
+        "tjeneste_RTM": generate_timeseries(start_year, end_year, model_year, CP_t_rtm, growth_rate_RTM),
+        "fritid_NTM": generate_timeseries(start_year, end_year, model_year, CP_f_ntm, growth_rate_NTM),
         "arbeid_NTM": generate_timeseries(start_year, end_year, model_year, CP_a_ntm, growth_rate_NTM),
-        "tjeneste_NTM": generate_timeseries(start_year, end_year, model_year, CP_f_ntm, growth_rate_NTM)}
+        "tjeneste_NTM": generate_timeseries(start_year, end_year, model_year, CP_t_ntm, growth_rate_NTM)}
 
     passenger_a1_all = pd.DataFrame(passenger_data, index=years)
 

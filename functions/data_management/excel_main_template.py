@@ -1,6 +1,8 @@
 import pandas as pd
 from xlsxwriter.utility import xl_range
 
+from functions.data_management.output_overview import overview_to_excel
+
 def dump_projects_to_excel(files_dict, output_file):
     """
     Eksporterer prosjektdata til en Excel-fil med ett ark per prosjekt.
@@ -45,6 +47,7 @@ def dump_projects_to_excel(files_dict, output_file):
             return 0
 
     with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+        writer = overview_to_excel(files_dict, writer)
         for project, scenarios in files_dict.items():
             # Begrens arknavnet til 31 tegn
             sheet_name = project[:31]
@@ -62,7 +65,7 @@ def dump_projects_to_excel(files_dict, output_file):
                 "bg_color": "white"
             })
             money_format = workbook.add_format({
-                "num_format": "##,##0.00 \"mrd\"",
+                "num_format": "#,##0",
                 "align": "center",
                 "bg_color": "white"
             })
@@ -109,7 +112,7 @@ def dump_projects_to_excel(files_dict, output_file):
                 "bottom": 4
             })
             base_money_dotted = workbook.add_format({
-                "num_format": "##,##0.00 \"mrd\"",
+                "num_format": "#,##0",
                 "align": "center",
                 "bg_color": "white",
                 "bottom": 4
@@ -128,7 +131,7 @@ def dump_projects_to_excel(files_dict, output_file):
                 "bottom": 1
             })
             effekt_money_border = workbook.add_format({
-                "num_format": "##,##0.00 \"mrd\"",
+                "num_format": "#,##0",
                 "align": "center",
                 "bg_color": "white",
                 "bottom": 1
@@ -166,7 +169,7 @@ def dump_projects_to_excel(files_dict, output_file):
             effect_value = None
             if "Main" in scenarios:
                 for file_obj in scenarios["Main"]:
-                    if file_obj.variation == "Standard" and not file_obj.df.empty:
+                    if file_obj.variation == "Hovedalternativet (MMMM)" and not file_obj.df.empty:
                         base_value = clean_int(file_obj.df.iloc[0, -1])
                         effect_value = clean_int(file_obj.df.iloc[1, -1]) if file_obj.df.shape[0] > 1 else 0
                         break
@@ -220,24 +223,24 @@ def dump_projects_to_excel(files_dict, output_file):
             
             # Baseverdi (rad 3) med DOTTED bunnlinje
             worksheet.write(row_base, 0, "Baseverdi", base_label_dotted)
-            worksheet.write(row_base, 1, base_value / 1e9, base_money_dotted)
+            worksheet.write(row_base, 1, base_value, base_money_dotted)
             worksheet.write(row_base, 2, base_dev, base_percent_dotted)
             
             # Blank rad (rad 4)
             # Øvre (rad 5)
             worksheet.write(row_upper, 0, "Øvre", summary_label_format)
-            worksheet.write(row_upper, 1, upper_value / 1e9, money_format)
+            worksheet.write(row_upper, 1, upper_value, money_format)
             worksheet.write(row_upper, 2, upper_dev, center_percent_format)
             
             # Nedre (rad 6)
             worksheet.write(row_lower, 0, "Nedre", summary_label_format)
-            worksheet.write(row_lower, 1, lower_value / 1e9, money_format)
+            worksheet.write(row_lower, 1, lower_value, money_format)
             worksheet.write(row_lower, 2, lower_dev, center_percent_format)
             
             # Blank rad (rad 7)
             # Effekt Trafikantnytte (rad 8) med bunnlinje
             worksheet.write(row_effekt, 0, "EFFEKT Trafikantnytte", effekt_label_border)
-            worksheet.write(row_effekt, 1, effect_value / 1e9, effekt_money_border)
+            worksheet.write(row_effekt, 1, effect_value, effekt_money_border)
             worksheet.write(row_effekt, 2, effekt_dev, effekt_percent_format)
             
             # Blank rad (rad 9)
@@ -245,6 +248,7 @@ def dump_projects_to_excel(files_dict, output_file):
             worksheet.write(row_scenario_header, 0, "Scenario", scenario_header_format)
             scenario_names = list(scenarios.keys())
             for col_idx, scenario in enumerate(scenario_names, start=1):
+                scenario = "Base" if scenario == "Main" else scenario
                 worksheet.write(row_scenario_header, col_idx, scenario, scenario_header_format)
             
             # Scenario-tabell data (rad 11 og nedover)
@@ -260,7 +264,7 @@ def dump_projects_to_excel(files_dict, output_file):
                     value = ""
                     for file_obj in file_objs:
                         if file_obj.variation == variation and not file_obj.df.empty:
-                            value = clean_int(file_obj.df.iloc[0, -1]) / 1e9
+                            value = clean_int(file_obj.df.iloc[0, -1])
                             break
                     worksheet.write(row_idx, col_idx, value, money_format)
             
