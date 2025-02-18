@@ -3,8 +3,8 @@
 from functions.data_management.get_data_from_excel import ExcelDataHandler
 
 
-def load_data():
-    file_path_projects = 'data/data.xlsx'
+def load_data(project_file_name = "Prosjekter"):
+    file_path_projects = f'data/{project_file_name}.xlsx'
     file_path_mapping = 'data/keyword_mapping.txt'
     sheet_name_price_growth = 'Tabell prisvekst'
     sheet_name_wage_growth = 'Tabell lønnsvekst'

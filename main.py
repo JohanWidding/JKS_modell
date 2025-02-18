@@ -4,7 +4,7 @@ from functions.data_management.output_main import load_excel_files
 
 
 if __name__ == "__main__":
-    data = load_data()
+    data = load_data(project_file_name="Prosjekter")
 
     for project in data.projects:
 
