@@ -16,7 +16,7 @@ def kilometer_cost_timeseries(project):
     baseline_year = int(project.y_baseline) # Dette er sammenligningsåret
     wage_given_year = int(project.y_carcost) # Dette er året kilometer kostnadene er gitt i
     growth_rate_onwords = project.y_price_growth
-    growth_rate_onwords_as_desimal = growth_rate_onwords - 1
+
 
     # Bruker lønnstabellen for å finne en vekstfaktor for å finne verdien i åpningsåret (gitt i sammenligningsår-kroner)
     years = [year for year in range(wage_given_year + 1, start_year + 1)]
@@ -27,7 +27,7 @@ def kilometer_cost_timeseries(project):
         if year in price_growth_df.iloc[:, 0].values and year <= baseline_year:
             growth_rate = price_growth_df[price_growth_df.iloc[:, 0] == year].iloc[0, 1]
         else:
-            growth_rate = growth_rate_onwords
+            growth_rate = 1 + growth_rate_onwords
 
         growth_rates.append(growth_rate)
 
@@ -59,21 +59,21 @@ def kilometer_cost_timeseries(project):
 
     # Genererer tidseriene
     fossil_data = {
-        "gods_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_heavy, growth_rate_onwords_as_desimal),
-        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_f_rtm, growth_rate_onwords_as_desimal),
-        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_a_rtm, growth_rate_onwords_as_desimal),
-        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_t_rtm, growth_rate_onwords_as_desimal),
-        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_f_ntm, growth_rate_onwords_as_desimal),
-        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_a_ntm, growth_rate_onwords_as_desimal),
-        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_t_ntm, growth_rate_onwords_as_desimal)}
+        "gods_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_heavy, growth_rate_onwords),
+        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_f_rtm, growth_rate_onwords),
+        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_a_rtm, growth_rate_onwords),
+        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_t_rtm, growth_rate_onwords),
+        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_f_ntm, growth_rate_onwords),
+        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_a_ntm, growth_rate_onwords),
+        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_FO_t_ntm, growth_rate_onwords)}
     electric_data = {
-        "gods_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_heavy, growth_rate_onwords_as_desimal),
-        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_f_rtm, growth_rate_onwords_as_desimal),
-        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_a_rtm, growth_rate_onwords_as_desimal),
-        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_t_rtm, growth_rate_onwords_as_desimal),
-        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_f_ntm, growth_rate_onwords_as_desimal),
-        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_a_ntm, growth_rate_onwords_as_desimal),
-        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_t_ntm, growth_rate_onwords_as_desimal)}
+        "gods_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_heavy, growth_rate_onwords),
+        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_f_rtm, growth_rate_onwords),
+        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_a_rtm, growth_rate_onwords),
+        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_t_rtm, growth_rate_onwords),
+        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_f_ntm, growth_rate_onwords),
+        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_a_ntm, growth_rate_onwords),
+        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, kilometer_cost_EL_t_ntm, growth_rate_onwords)}
     
 
     fossil_df = pd.DataFrame(fossil_data, index=[year for year in range(start_year, end_year + 1)])

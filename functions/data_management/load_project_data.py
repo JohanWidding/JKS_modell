@@ -10,12 +10,11 @@ def load_data(project_file_name = "Prosjekter"):
     sheet_name_wage_growth = 'Tabell lønnsvekst'
     sheet_name_projects = "ProsjektData"
     sheet_name_population = "Befolkningsfremskrivinger"
-    sheet_name_pop_to_traffic = "bef. til trafikk"
 
     data = ExcelDataHandler(file_path_projects, 
                             file_path_mapping,
                             sheet_name_price_growth,
                             sheet_name_wage_growth,
                             sheet_name_projects,
-                            sheet_name_population, sheet_name_pop_to_traffic)
+                            sheet_name_population)
     return data

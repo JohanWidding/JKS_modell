@@ -22,7 +22,6 @@ def generate_timeseries(project, initial_value, growth_rate, decay_list):
     scenario = project.scenario
 
     befolkning = project.population_df
-    pop_to_traffic = project.pop_to_traffic_df # Brukes ikke lengre
     adj_traffic_factor = project.adj_traffic
 
     years = range(start_year, end_year + 1)

@@ -8,13 +8,10 @@ if __name__ == "__main__":
 
     for project in data.projects:
 
-        scenarios = ["Standard", "Hovedalternativet (MMMM)", "Lav nasjonal vekst (LLML)", "Høy nasjonal vekst (HHMH)"]
-
-        trafikantnytte_liste = []
+        scenarios = ["Standard"]
 
         for s in scenarios:
             trafikantnytte = calculate_project(project=project, scenario=s)
 
-            trafikantnytte_liste.append(trafikantnytte)
 
     load_excel_files("Output//")

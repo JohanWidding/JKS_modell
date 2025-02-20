@@ -16,7 +16,7 @@ def hour_cost_timeseries(project):
     baseline_year = int(project.y_baseline) # Dette er sammenligningsåret
     wage_given_year = int(project.y_salary) # Dette er året timesverdiene er gitt i
     growth_rate_onwords = project.y_wage_growth
-    growth_rate_onwords_as_desimal = growth_rate_onwords - 1
+
 
     # Bruker lønnstabellen for å finne en vekstfaktor for å finne verdien i åpningsåret (gitt i sammenligningsår-kroner)
     years = [year for year in range(wage_given_year + 1, start_year + 1)]
@@ -27,7 +27,7 @@ def hour_cost_timeseries(project):
         if year in wagegrowth_df.iloc[:, 0].values and year <= baseline_year:
             growth_rate = wagegrowth_df[wagegrowth_df.iloc[:, 0] == year].iloc[0, 1]
         else:
-            growth_rate = growth_rate_onwords
+            growth_rate = 1 + growth_rate_onwords
 
         growth_rates.append(growth_rate)
 
@@ -53,21 +53,21 @@ def hour_cost_timeseries(project):
 
     # Genererer tidseriene
     driver_data = {
-        "gods_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_heavy, growth_rate_onwords_as_desimal),
-        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_f_rtm, growth_rate_onwords_as_desimal),
-        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_a_rtm, growth_rate_onwords_as_desimal),
-        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_t_rtm, growth_rate_onwords_as_desimal),
-        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_f_ntm, growth_rate_onwords_as_desimal),
-        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_a_ntm, growth_rate_onwords_as_desimal),
-        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_t_ntm, growth_rate_onwords_as_desimal)}
+        "gods_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_heavy, growth_rate_onwords),
+        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_f_rtm, growth_rate_onwords),
+        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_a_rtm, growth_rate_onwords),
+        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_t_rtm, growth_rate_onwords),
+        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_f_ntm, growth_rate_onwords),
+        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_a_ntm, growth_rate_onwords),
+        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_t_ntm, growth_rate_onwords)}
     passanger_data = {
-        "gods_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_heavy, growth_rate_onwords_as_desimal),
-        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_f_rtm, growth_rate_onwords_as_desimal),
-        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_a_rtm, growth_rate_onwords_as_desimal),
-        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_t_rtm, growth_rate_onwords_as_desimal),
-        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_f_ntm, growth_rate_onwords_as_desimal),
-        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_a_ntm, growth_rate_onwords_as_desimal),
-        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_t_ntm, growth_rate_onwords_as_desimal)}
+        "gods_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_driver_heavy, growth_rate_onwords),
+        "fritid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_f_rtm, growth_rate_onwords),
+        "arbeid_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_a_rtm, growth_rate_onwords),
+        "tjeneste_RTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_t_rtm, growth_rate_onwords),
+        "fritid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_f_ntm, growth_rate_onwords),
+        "arbeid_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_a_ntm, growth_rate_onwords),
+        "tjeneste_NTM": generate_timeseries(start_year, end_year, start_year, hourcost_passanger_t_ntm, growth_rate_onwords)}
     
 
     driver_df = pd.DataFrame(driver_data, index=[year for year in range(start_year, end_year + 1)])
