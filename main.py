@@ -13,6 +13,7 @@ if __name__ == "__main__":
 
         # Disse scenarione finner du under "Befolkningsfremskrivelser"-arket i inndata filen.
         # Standard bruker standard forutsetninger.
+        # ["Hovedalternativet (MMMM)", "Høy nasjonal vekst (HHMH)", "Lav nasjonal vekst (LLML)"]
         scenarios = ["Standard"]
 
         for s in scenarios:
