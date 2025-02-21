@@ -80,10 +80,6 @@ def vehicle_group_timeseries(project):
     decay_series_light_t = gen_linear_timeseries(start_year, end_year, model_year, end_year_of_fossil_light, share_fossil_light_open, share_fossil_light_model_t)
     decay_series_heavy = gen_linear_timeseries(start_year, end_year, model_year, end_year_of_fossil_heavy, share_fossil_heavy_open, share_fossil_heavy_model)
 
-    print(share_fossil_light_open)
-    print(share_fossil_light_model_ntm)
-    print(decay_series_light_NTM)
-
 
     # Dersom noen trafikantgrupper skal variere ekstraordinært. ex. Mer hjemmekontor -> tjenestereisende avtar
     decay_factors_non = [1 for i in range(100)]

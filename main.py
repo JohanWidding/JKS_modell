@@ -6,12 +6,17 @@ from functions.data_management.output_main import load_excel_files
 if __name__ == "__main__":
     data = load_data(project_file_name="Prosjekter")
 
+    # I data filen finner du alle prosjektene listet som objekter i data.projects
+    # Prosjekt objektet inneholder alle tabellene, og variablene fra 'keyword_mapping.txt'
+
     for project in data.projects:
 
+        # Disse scenarione finner du under "Befolkningsfremskrivelser"-arket i inndata filen.
+        # Standard bruker standard forutsetninger.
         scenarios = ["Standard"]
 
         for s in scenarios:
             trafikantnytte = calculate_project(project=project, scenario=s)
 
-
+    # Her lastes alle output filene inn og genrerer projects_data.xlsx
     load_excel_files("Output//")
